@@ -5,14 +5,23 @@ Simple Vite + React demo for managing Ethara employee seating, project mapping, 
 ## Tech Stack
 
 - Frontend: React with Vite
+- Backend: Node.js HTTP server with REST APIs
+- Persistence: JSON file (`backend/data.json`) — survives reload and server restart
 - Styling: Plain CSS, black and white theme
-- Data: In-memory generated seed data for local demo
-- AI Assistant: Rule-based natural language parser fallback
+- AI Assistant: Rule-based natural language parser
 
 ## Run Locally
 
+Terminal 1 — backend:
+
 ```bash
 npm install
+npm run backend
+```
+
+Terminal 2 — frontend:
+
+```bash
 npm run dev
 ```
 
@@ -22,17 +31,13 @@ Frontend local URL:
 http://127.0.0.1:5173
 ```
 
-Backend local run:
-
-```bash
-npm run backend
-```
-
 Backend local URL:
 
 ```text
 http://127.0.0.1:4000
 ```
+
+The Vite dev server proxies `/api/*` to the backend. Set `VITE_API_URL` in `.env` for production (e.g. your Render/Railway URL).
 
 ## Demo Data Included
 
@@ -118,29 +123,31 @@ CREATE TABLE seat_allocations (
 
 ## API Documentation
 
-For this quick Vite demo, APIs are represented by React functions and documented here for backend implementation.
+All endpoints are live on the backend. Data persists to `backend/data.json`.
+
+Base URL (local): `http://127.0.0.1:4000`
 
 ### Employee APIs
 
-- `POST /employees` - Create employee
-- `GET /employees` - List employees
-- `GET /employees/{id}` - Get employee details
-- `PUT /employees/{id}` - Update employee
-- `DELETE /employees/{id}` - Deactivate employee
+- `POST /employees` — Create employee
+- `GET /employees` — List employees
+- `GET /employees/{id}` — Get employee details
+- `PUT /employees/{id}` — Update employee
+- `DELETE /employees/{id}` — Deactivate employee (releases seat)
 
 ### Project APIs
 
-- `POST /projects` - Create project
-- `GET /projects` - List projects
-- `GET /projects/{id}/employees` - List project employees
+- `POST /projects` — Create project
+- `GET /projects` — List projects
+- `GET /projects/{id}/employees` — List project employees
 
 ### Seat APIs
 
-- `POST /seats` - Create seat
-- `GET /seats` - List seats
-- `GET /seats/available` - List available seats
-- `POST /seats/allocate` - Allocate seat
-- `POST /seats/release` - Release seat
+- `POST /seats` — Create seat
+- `GET /seats` — List seats
+- `GET /seats/available` — List available seats
+- `POST /seats/allocate` — Allocate seat (`{ "employee_id": 981 }`)
+- `POST /seats/release` — Release seat (`{ "employee_id": 5 }`)
 
 ### Dashboard APIs
 
