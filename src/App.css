@@ -1,5 +1,5 @@
 main {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 48px;
 }
@@ -10,7 +10,11 @@ main {
 .filters,
 .assistant,
 .quick-questions,
-.bar-row {
+.bar-row,
+.tabs,
+.map-controls,
+.legend,
+.row-actions {
   display: flex;
   align-items: center;
 }
@@ -19,26 +23,28 @@ main {
   justify-content: space-between;
   gap: 24px;
   padding: 28px 0;
-  border-bottom: 1px solid #111;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.12);
 }
 
 .eyebrow {
   margin: 0 0 8px;
+  color: #0f766e;
   font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 h1,
 h2 {
   margin: 0;
-  color: #000;
+  color: #0f172a;
 }
 
 h1 {
-  font-size: clamp(30px, 5vw, 56px);
-  line-height: 1;
+  max-width: 780px;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.98;
 }
 
 h2 {
@@ -48,14 +54,41 @@ h2 {
 .api-pill,
 button,
 mark {
-  border: 1px solid #111;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .api-pill {
-  padding: 8px 12px;
-  font-weight: 800;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  padding: 10px 14px;
+  background: #ecfdf5;
+  color: #0f766e;
+  font-weight: 900;
   white-space: nowrap;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  gap: 8px;
+  margin: 18px 0;
+  padding: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+}
+
+.tabs button {
+  flex: 1;
+  background: transparent;
+  color: #334155;
+}
+
+.tabs button.active,
+.tabs button:hover {
+  background: #0f172a;
+  color: #fff;
 }
 
 .stats {
@@ -67,9 +100,10 @@ mark {
 
 .stat,
 .panel {
-  border: 1px solid #111;
+  border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 8px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
 }
 
 .stat {
@@ -78,26 +112,29 @@ mark {
 
 .stat span,
 td span,
-.section-head span {
+.section-head span,
+.project-card span,
+.seat small {
   display: block;
-  color: #555;
+  color: #64748b;
   font-size: 12px;
 }
 
 .stat strong {
   display: block;
   margin-top: 8px;
+  color: #0f172a;
   font-size: 30px;
-  color: #000;
 }
 
 .notice {
   margin: 0 0 20px;
   padding: 12px 14px;
-  border: 1px solid #111;
+  border: 1px solid rgba(14, 165, 233, 0.24);
   border-radius: 8px;
-  background: #000;
-  color: #fff;
+  background: #f0f9ff;
+  color: #075985;
+  font-weight: 700;
 }
 
 .grid {
@@ -107,27 +144,47 @@ td span,
 }
 
 .two {
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1.15fr 0.85fr;
+}
+
+.align-start {
+  align-items: start;
 }
 
 .panel {
   padding: 18px;
 }
 
+.hero-panel {
+  background:
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.18), transparent 34%),
+    linear-gradient(135deg, #ffffff, #f8fafc);
+}
+
 .section-head {
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 14px;
 }
 
 .assistant,
 .form,
-.filters {
+.filters,
+.map-controls {
   gap: 10px;
   margin-top: 14px;
 }
 
 .form {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.employee-form {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project-form {
   grid-template-columns: 1fr 1fr;
 }
 
@@ -142,24 +199,41 @@ button {
 input,
 select {
   width: 100%;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  border-radius: 8px;
   padding: 8px 10px;
-  border: 1px solid #111;
-  border-radius: 6px;
   background: #fff;
-  color: #000;
+  color: #0f172a;
 }
 
 button {
+  border: 0;
   padding: 8px 12px;
-  background: #000;
+  background: #0f172a;
   color: #fff;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
 }
 
-button:hover {
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #0f766e;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.78;
+}
+
+.ghost {
+  border: 1px solid rgba(15, 23, 42, 0.16);
   background: #fff;
-  color: #000;
+  color: #0f172a;
+}
+
+.danger {
+  color: #be123c;
 }
 
 .assistant input {
@@ -169,25 +243,24 @@ button:hover {
 .answer {
   min-height: 42px;
   margin: 12px 0;
+  border-left: 4px solid #14b8a6;
+  border-radius: 0 8px 8px 0;
   padding: 12px;
-  border-left: 4px solid #111;
-  background: #f5f5f5;
+  background: #f8fafc;
 }
 
-.quick-questions {
+.quick-questions,
+.row-actions,
+.legend {
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .quick-questions button {
+  border: 1px solid rgba(15, 23, 42, 0.12);
   background: #fff;
-  color: #000;
+  color: #334155;
   font-size: 12px;
-}
-
-.quick-questions button:hover {
-  background: #000;
-  color: #fff;
 }
 
 .filters {
@@ -201,38 +274,41 @@ button:hover {
 
 table {
   width: 100%;
-  min-width: 820px;
+  min-width: 960px;
   border-collapse: collapse;
 }
 
 th,
 td {
   padding: 12px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.09);
   text-align: left;
   vertical-align: middle;
 }
 
 th {
-  color: #000;
+  color: #475569;
   font-size: 12px;
   text-transform: uppercase;
 }
 
-td strong {
-  color: #000;
+td strong,
+.project-card strong {
+  color: #0f172a;
 }
 
 mark {
   display: inline-block;
+  border: 1px solid rgba(15, 118, 110, 0.2);
   padding: 4px 8px;
-  background: #fff;
-  color: #000;
+  background: #ecfdf5;
+  color: #0f766e;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
-.bars {
+.bars,
+.project-list {
   display: grid;
   gap: 10px;
   margin-top: 14px;
@@ -240,28 +316,111 @@ mark {
 
 .bar-row {
   display: grid;
-  grid-template-columns: 100px 1fr 90px;
+  grid-template-columns: 120px 1fr 110px;
   gap: 10px;
   font-size: 13px;
 }
 
 .bar-row div {
   height: 12px;
-  border: 1px solid #111;
   border-radius: 999px;
   overflow: hidden;
+  background: #e2e8f0;
 }
 
 .bar-row i {
   display: block;
   max-width: 100%;
   height: 100%;
-  background: #000;
+  background: linear-gradient(90deg, #0f766e, #0284c7);
 }
 
-@media (max-width: 900px) {
+.project-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.project-card p {
+  margin: 8px 0 0;
+  color: #475569;
+}
+
+.map-controls {
+  display: grid;
+  grid-template-columns: 160px 160px 1fr;
+  align-items: center;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.seat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(72px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.seat {
+  display: grid;
+  align-content: center;
+  min-height: 58px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  padding: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  text-align: left;
+}
+
+.seat span {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.seat.available,
+.seat-dot.available {
+  background: #dcfce7;
+}
+
+.seat.occupied,
+.seat-dot.occupied {
+  background: #dbeafe;
+}
+
+.seat.reserved,
+.seat-dot.reserved {
+  background: #fef3c7;
+}
+
+.seat.maintenance,
+.seat-dot.maintenance {
+  background: #fee2e2;
+}
+
+.seat.selected {
+  outline: 3px solid #0f766e;
+}
+
+@media (max-width: 980px) {
   main {
-    width: min(100% - 20px, 760px);
+    width: min(100% - 20px, 820px);
     padding-top: 12px;
   }
 
@@ -274,28 +433,47 @@ mark {
   .stats,
   .two,
   .filters,
-  .form {
+  .form,
+  .employee-form,
+  .project-form,
+  .map-controls {
     grid-template-columns: 1fr 1fr;
   }
 
-  .stats {
-    gap: 8px;
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .tabs button {
+    flex: 0 0 160px;
+  }
+
+  .seat-map {
+    grid-template-columns: repeat(5, minmax(64px, 1fr));
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 580px) {
   .stats,
   .two,
   .filters,
-  .form {
+  .form,
+  .employee-form,
+  .project-form,
+  .map-controls,
+  .project-card {
     grid-template-columns: 1fr;
   }
 
   .bar-row {
-    grid-template-columns: 78px 1fr;
+    grid-template-columns: 88px 1fr;
   }
 
   .bar-row b {
     grid-column: 2;
+  }
+
+  .seat-map {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

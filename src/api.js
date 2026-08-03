@@ -107,10 +107,63 @@ export async function createEmployee(payload) {
   return normalizeEmployee(row)
 }
 
-export async function allocateSeat(employeeId) {
+export async function updateEmployee(employeeId, payload) {
+  const row = await request(`/employees/${employeeId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      name: payload.name,
+      email: payload.email,
+      department: payload.department,
+      role: payload.role,
+      status: payload.status,
+      project_id: Number(payload.projectId),
+    }),
+  })
+  return normalizeEmployee(row)
+}
+
+export async function deleteEmployee(employeeId) {
+  const row = await request(`/employees/${employeeId}`, { method: 'DELETE' })
+  return normalizeEmployee(row)
+}
+
+export async function createProject(payload) {
+  const row = await request('/projects', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: payload.name,
+      description: payload.description,
+      manager_name: payload.manager,
+      status: payload.status,
+      zone: payload.zone,
+    }),
+  })
+  return normalizeProject(row)
+}
+
+export async function updateProject(projectId, payload) {
+  const row = await request(`/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      name: payload.name,
+      description: payload.description,
+      manager_name: payload.manager,
+      status: payload.status,
+      zone: payload.zone,
+    }),
+  })
+  return normalizeProject(row)
+}
+
+export async function deleteProject(projectId) {
+  const row = await request(`/projects/${projectId}`, { method: 'DELETE' })
+  return normalizeProject(row)
+}
+
+export async function allocateSeat(employeeId, seatId = null) {
   const result = await request('/seats/allocate', {
     method: 'POST',
-    body: JSON.stringify({ employee_id: employeeId }),
+    body: JSON.stringify({ employee_id: employeeId, seat_id: seatId }),
   })
   return result
 }

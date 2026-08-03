@@ -201,6 +201,43 @@ function createProject(body) {
   return { data: project, status: 201 }
 }
 
+function updateProject(id, body) {
+  const project = store.projects.find((item) => item.id === id)
+  if (!project) return { error: 'Project not found.', status: 404 }
+
+  const name = String(body.name || project.name).trim()
+  if (!name) return { error: 'Project name is required.', status: 400 }
+  if (store.projects.some((item) => item.id !== id && item.name.toLowerCase() === name.toLowerCase())) {
+    return { error: 'Project already exists.', status: 409 }
+  }
+
+  project.name = name
+  project.description = body.description || project.description
+  project.manager_name = body.manager_name || project.manager_name
+  project.status = body.status || project.status
+  project.zone = body.zone || project.zone
+
+  saveStore()
+  return { data: project, status: 200 }
+}
+
+function deleteProject(id) {
+  const project = store.projects.find((item) => item.id === id)
+  if (!project) return { error: 'Project not found.', status: 404 }
+
+  const activeEmployees = store.employees.filter((employee) => employee.project_id === id && employee.status !== 'Inactive')
+  if (activeEmployees.length) {
+    return { error: 'Move employees to another project before deleting this project.', status: 409 }
+  }
+
+  store.projects = store.projects.filter((item) => item.id !== id)
+  store.seats.forEach((seat) => {
+    if (seat.allocated_project_id === id) seat.allocated_project_id = null
+  })
+  saveStore()
+  return { data: project, status: 200 }
+}
+
 function createSeat(body) {
   const floor = Number(body.floor)
   const zone = String(body.zone || '').trim()
@@ -234,6 +271,7 @@ function createSeat(body) {
 
 function allocateSeat(body) {
   const employeeId = Number(body.employee_id)
+  const requestedSeatId = Number(body.seat_id)
   const employee = store.employees.find((item) => item.id === employeeId)
   if (!employee) return { error: 'Employee not found.', status: 404 }
   if (employee.status === 'Inactive') return { error: 'Inactive employee cannot be allocated.', status: 400 }
@@ -241,8 +279,11 @@ function allocateSeat(body) {
   const existing = store.seats.find((item) => item.allocated_employee_id === employeeId && item.status === 'Occupied')
   if (existing) return { error: 'Employee already has an active seat.', status: 409 }
 
-  const seat = suggestSeat(employee.project_id)
+  const seat = requestedSeatId
+    ? store.seats.find((item) => item.id === requestedSeatId)
+    : suggestSeat(employee.project_id)
   if (!seat) return { error: 'No available seats found.', status: 409 }
+  if (seat.status !== 'Available') return { error: 'Selected seat is not available.', status: 409 }
 
   seat.status = 'Occupied'
   seat.allocated_employee_id = employee.id
@@ -340,6 +381,21 @@ const server = http.createServer(async (request, response) => {
     if (path === '/projects' && method === 'POST') {
       const body = await readBody(request)
       const result = createProject(body)
+      if (result.error) return send(response, result.status, { error: result.error })
+      return send(response, result.status, result.data)
+    }
+
+    if (path.match(/^\/projects\/\d+$/) && method === 'PUT') {
+      const id = Number(path.split('/')[2])
+      const body = await readBody(request)
+      const result = updateProject(id, body)
+      if (result.error) return send(response, result.status, { error: result.error })
+      return send(response, result.status, result.data)
+    }
+
+    if (path.match(/^\/projects\/\d+$/) && method === 'DELETE') {
+      const id = Number(path.split('/')[2])
+      const result = deleteProject(id)
       if (result.error) return send(response, result.status, { error: result.error })
       return send(response, result.status, result.data)
     }
